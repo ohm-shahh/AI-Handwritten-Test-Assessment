@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tutor — Intelligent Academic Evaluation Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">AI Tutor</span>
+                    <span class="brand-subtitle">Academic Evaluation System</span>
+                </div>
+            </div>
+
+            <!-- Portal Switcher Tabs -->
+            <nav class="role-nav">
+                <button class="role-tab active" data-tab="student-portal" id="tab-student">
+                    <span class="tab-icon">🎓</span>
+                    <span>Student Portal</span>
+                </button>
+                <button class="role-tab" data-tab="teacher-portal" id="tab-teacher">
+                    <span class="tab-icon">👨‍🏫</span>
+                    <span>Teacher Portal</span>
+                </button>
+                <button class="role-tab" data-tab="ocr-lab" id="tab-ocr">
+                    <span class="tab-icon">🔬</span>
+                    <span>OCR Lab</span>
+                </button>
+            </nav>
+
+            <div class="header-actions">
+                <div class="global-ocr-picker">
+                    <span class="global-ocr-label">OCR Engine:</span>
+                    <select id="global-ocr-engine" class="global-ocr-select" aria-label="Global OCR Engine">
+                        <option value="standard" selected>Standard OCR</option>
+                        <option value="chandra">Chandra OCR</option>
+                        <option value="qwen2.5vl">Qwen2.5-VL OCR</option>
+                        <option value="surya">Surya OCR</option>
+                    </select>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Ollama Engine Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+
+        <!-- =================================================================== -->
+        <!-- 1. STUDENT PORTAL -->
+        <!-- =================================================================== -->
+        <section class="portal-view active" id="view-student-portal">
+            <div class="portal-header">
+                <div>
+                    <h1 class="portal-title">Available Assignments & Tests</h1>
+                    <p class="portal-subtitle">Select an active test posted by your instructor to upload your handwritten solution sheet or PDF.</p>
+                </div>
+                <div class="portal-stats-row">
+                    <div class="chip-badge"><span id="active-test-count">0</span> Active Tests</div>
+                </div>
+            </div>
+
+            <!-- Test Cards Grid -->
+            <div class="test-cards-grid" id="student-test-list">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Student Submission Modal / Drawer -->
+            <div class="modal-backdrop" id="submit-modal" style="display: none;">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <div>
+                            <span class="modal-tag" id="modal-test-subject">Machine Learning</span>
+                            <h2 class="modal-title" id="modal-test-title">Test Submission</h2>
+                        </div>
+                        <button type="button" class="btn-close" id="close-modal-btn">✕</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Question Card -->
+                        <div class="question-preview-box">
+                            <div class="box-label">Assignment Questions</div>
+                            <div class="question-content" id="modal-test-question">Loading questions...</div>
+                            <div class="marks-info">Total Weightage: <strong id="modal-test-marks">10</strong> Marks</div>
+                        </div>
+
+                        <!-- Submission Form -->
+                        <form id="student-submit-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Student Full Name</label>
+                                    <input type="text" id="stu-name" class="form-input" placeholder="e.g. Ohm Shah" required value="Ohm Shah">
+                                </div>
+                                <div class="form-group">
+                                    <label>Roll Number / Student ID</label>
+                                    <input type="text" id="stu-roll" class="form-input" placeholder="e.g. D25DCS160" required value="D25DCS160">
+                                </div>
+                            </div>
+
+                            <!-- File Upload Area -->
+                            <div class="upload-zone" id="stu-drop-zone">
+                                <div class="upload-icon-circle">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                </div>
+                                <div class="upload-title">Drop your handwritten solution photo or PDF here</div>
+                                <div class="upload-sub">Supports PNG, JPG, JPEG, and PDF documents</div>
+                                <input type="file" id="stu-file-input" accept="image/*,application/pdf" style="display: none;">
+                            </div>
+
+                            <!-- Quick Sample Loaders -->
+                            <div class="quick-samples-bar">
+                                <span class="sample-label">Quick Test Sample:</span>
+                                <button type="button" class="btn-pill" id="stu-load-sample-img">📎 Handwritten Sample Image</button>
+                                <button type="button" class="btn-pill" id="stu-load-sample-pdf">📄 Sample Solution PDF</button>
+                            </div>
+
+                            <!-- Selected File Badge -->
+                            <div class="file-chip" id="stu-file-chip" style="display: none;">
+                                <span class="file-chip-icon">📄</span>
+                                <span class="file-chip-name" id="stu-file-name">filename.png</span>
+                                <span class="file-chip-size" id="stu-file-size">0 KB</span>
+                                <button type="button" class="file-chip-remove" id="stu-file-remove">✕</button>
+                            </div>
+
+                            <!-- Preprocessing Options Accordion -->
+                            <div class="options-accordion">
+                                <div class="accordion-toggle" id="options-toggle">
+                                    <span>⚙️ Advanced Preprocessing Settings (OpenCV)</span>
+                                    <span class="chevron">▼</span>
+                                </div>
+                                <div class="accordion-body" id="options-body" style="display: none;">
+                                    <div class="toggle-grid">
+                                        <label class="toggle-pill">
+                                            <input type="checkbox" id="stu-grayscale" checked>
+                                            <span>Grayscale</span>
+                                        </label>
+                                        <label class="toggle-pill">
+                                            <input type="checkbox" id="stu-denoise" checked>
+                                            <span>Bilateral Denoise</span>
+                                        </label>
+                                        <label class="toggle-pill">
+                                            <input type="checkbox" id="stu-deskew" checked>
+                                            <span>Auto Deskew</span>
+                                        </label>
+                                        <label class="toggle-pill">
+                                            <input type="checkbox" id="stu-threshold" checked>
+                                            <span>Adaptive Binarize</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary btn-submit-full" id="stu-submit-btn" disabled>
+                                <span>Evaluate Assignment with AI Tutor</span>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Evaluation Loading Overlay -->
+                        <div class="eval-loading-state" id="eval-loading" style="display: none;">
+                            <div class="loading-ring"></div>
+                            <h3 class="loading-title">AI Tutor is Grading Your Solution...</h3>
+                            <p class="loading-desc">Extracting handwriting text with OpenCV $\rightarrow$ Semantically evaluating against the model rubric with Ollama LLM.</p>
+                        </div>
+
+                        <!-- Result Section -->
+                        <div class="evaluation-result-panel" id="eval-result" style="display: none;">
+                            <div class="result-hero-card">
+                                <div class="score-display">
+                                    <div class="score-badge">
+                                        <span class="score-num" id="res-score">-</span>
+                                        <span class="score-denom">/ <span id="res-max-score">-</span></span>
+                                    </div>
+                                    <div class="score-meta">
+                                        <div class="score-pct-badge" id="res-status-badge">Graded</div>
+                                        <div class="score-percentage" id="res-percentage">0% Accuracy</div>
+                                    </div>
+                                </div>
+                                <div class="reasoning-box">
+                                    <div class="reasoning-title">Evaluation Summary</div>
+                                    <p class="reasoning-text" id="res-reasoning">Evaluation details will appear here.</p>
+                                </div>
+                            </div>
+
+                            <!-- Concept Match Grid -->
+                            <div class="concepts-grid">
+                                <div class="concept-card success">
+                                    <div class="concept-card-header">
+                                        <span class="concept-icon">✅</span>
+                                        <h4>Key Concepts Covered</h4>
+                                    </div>
+                                    <ul class="concept-list" id="res-covered-list">
+                                        <li>Concept 1</li>
+                                    </ul>
+                                </div>
+
+                                <div class="concept-card warning">
+                                    <div class="concept-card-header">
+                                        <span class="concept-icon">⚠️</span>
+                                        <h4>Missing Points / Areas for Improvement</h4>
+                                    </div>
+                                    <ul class="concept-list" id="res-missing-list">
+                                        <li>Point 1</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Constructive Feedback Card -->
+                            <div class="feedback-card">
+                                <div class="feedback-header">
+                                    <span class="feedback-icon">💡</span>
+                                    <h4>Tutor Actionable Recommendations</h4>
+                                </div>
+                                <p class="feedback-content" id="res-feedback">-</p>
+                            </div>
+
+                            <!-- Extracted Text & Image Drawer -->
+                            <details class="extracted-details">
+                                <summary>View Extracted Handwriting & Preprocessed Image</summary>
+                                <div class="extracted-content-grid">
+                                    <div>
+                                        <h5>Extracted Solution Text</h5>
+                                        <pre class="raw-text-box" id="res-extracted-text">-</pre>
+                                    </div>
+                                    <div id="res-img-container" style="display: none;">
+                                        <h5>Cleaned Preprocessed Image</h5>
+                                        <img id="res-preprocessed-img" src="" alt="Preprocessed Preview" class="cleaned-preview-img">
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =================================================================== -->
+        <!-- 2. TEACHER PORTAL -->
+        <!-- =================================================================== -->
+        <section class="portal-view" id="view-teacher-portal">
+            <div class="portal-header">
+                <div>
+                    <h1 class="portal-title">Teacher Dashboard & Test Management</h1>
+                    <p class="portal-subtitle">Create new tests, upload model answer rubrics, and review student grades with manual overrides.</p>
+                </div>
+                <button type="button" class="btn-primary" id="open-create-test-btn">
+                    <span>+ Create New Test</span>
+                </button>
+            </div>
+
+            <!-- Create Test Form Modal -->
+            <div class="modal-backdrop" id="create-test-modal" style="display: none;">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <div>
+                            <span class="modal-tag">Test Builder</span>
+                            <h2 class="modal-title">Create New Assignment / Test</h2>
+                            <p class="modal-sub" style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px;">
+                                Type manually or directly upload a Question Paper / Model Solution PDF to auto-extract.
+                            </p>
+                        </div>
+                        <button type="button" class="btn-close" id="close-create-modal-btn">✕</button>
+                    </div>
+
+                    <form id="create-test-form" class="modal-body">
+                        <!-- Quick Preset Bar -->
+                        <div class="quick-preset-bar" style="display: flex; align-items: center; justify-content: space-between; background: var(--primary-gradient-subtle); padding: 8px 14px; border-radius: var(--radius-md); border: 1px dashed rgba(99, 102, 241, 0.3); margin-bottom: 1rem;">
+                            <span style="font-size: 0.82rem; font-weight: 600; color: var(--accent-indigo);">⚡ Quick Template:</span>
+                            <button type="button" class="btn-pill" id="btn-load-test-sample" style="background: #ffffff; color: var(--accent-indigo); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 0.78rem;">
+                                💡 Auto-Fill Sample ML Assignment
+                            </button>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Unique Test Identifier (ID)</label>
+                                <input type="text" id="new-test-id" class="form-input" placeholder="e.g. test_2_DataStructures" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject / Course Name</label>
+                                <input type="text" id="new-test-subject" class="form-input" placeholder="e.g. Data Structures & Algorithms" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Test Title</label>
+                                <input type="text" id="new-test-title" class="form-input" placeholder="e.g. Binary Search Trees & AVL Balancing" required>
+                            </div>
+                            <div class="form-group" style="max-width: 130px;">
+                                <label>Max Marks</label>
+                                <input type="number" id="new-test-marks" class="form-input" placeholder="10" value="10" required min="1" step="0.5">
+                            </div>
+                            <div class="form-group" style="max-width: 150px;">
+                                <label>Due Date</label>
+                                <input type="date" id="new-test-due" class="form-input" required value="2026-10-30">
+                            </div>
+                        </div>
+
+                        <!-- 1. Question Paper Section with Direct Upload Dropzone -->
+                        <div class="form-group">
+                            <div class="label-with-action">
+                                <label><strong>1. Questions / Problem Statement</strong></label>
+                                <button type="button" class="btn-text-link" id="auto-extract-qp-btn">
+                                    📂 Upload & Auto-Extract Question Paper (PDF / Image)
+                                </button>
+                                <input type="file" id="qp-file-input" accept="application/pdf,image/*" style="display: none;">
+                            </div>
+
+                            <!-- QP Drag & Drop Zone -->
+                            <div class="mini-upload-zone" id="qp-drop-zone">
+                                <span>📄 Drag & drop Question Paper PDF / Image here, or <strong style="color: var(--accent-indigo);">click to browse</strong></span>
+                            </div>
+
+                            <textarea id="new-test-questions" class="form-textarea" rows="3" placeholder="Type questions manually or upload a Question Paper PDF above to auto-fill..." required style="margin-top: 6px;"></textarea>
+                        </div>
+
+                        <!-- 2. Model Solution Section with Direct Upload Dropzone -->
+                        <div class="form-group">
+                            <div class="label-with-action">
+                                <label><strong>2. Model Answer Key / Ground Truth</strong></label>
+                                <button type="button" class="btn-text-link" id="auto-extract-model-btn">
+                                    📄 Upload & Auto-Extract Model Solution PDF
+                                </button>
+                                <input type="file" id="model-pdf-input" accept="application/pdf,image/*" style="display: none;">
+                            </div>
+
+                            <!-- Model Solution Drag & Drop Zone -->
+                            <div class="mini-upload-zone" id="model-drop-zone">
+                                <span>📑 Drag & drop Solution Key PDF here, or <strong style="color: var(--accent-indigo);">click to browse</strong></span>
+                            </div>
+
+                            <textarea id="new-test-model-ans" class="form-textarea" rows="3" placeholder="Enter the complete model answer that student submissions will be graded against..." required style="margin-top: 6px;"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label><strong>3. Grading Rubric & Key Point Checklist (Optional)</strong></label>
+                            <input type="text" id="new-test-rubric" class="form-input" placeholder="e.g. Definition: 2 marks; Algorithm steps: 4 marks; Trade-offs: 4 marks">
+                        </div>
+
+                        <button type="submit" class="btn-primary btn-submit-full" id="save-test-btn" style="height: 44px; font-size: 0.95rem;">
+                            Publish Test to Student Portal
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Teacher Tests & Submissions Container -->
+            <div class="teacher-dashboard-layout">
+                <div class="dashboard-left">
+                    <h3 class="section-heading">Published Tests</h3>
+                    <div class="test-sidebar-list" id="teacher-test-list">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+
+                <div class="dashboard-right">
+                    <div class="panel-header-row" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 1.2rem;">
+                        <div>
+                            <h3 class="section-heading" id="current-test-name">Select a test to view submissions</h3>
+                            <p class="section-sub" id="current-test-meta">Real-time student evaluation records.</p>
+                        </div>
+                        <div id="teacher-kb-status-card" style="display: none; align-items: center; gap: 8px; background: rgba(248, 250, 252, 0.9); border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 6px 14px; font-size: 0.84rem;">
+                            <span style="font-weight: 600; color: var(--text-secondary, #64748b);">Knowledge Base:</span>
+                            <span id="teacher-kb-status-badge" style="display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 600; font-size: 0.78rem;">Checking...</span>
+                            <button type="button" class="btn-text-link" id="teacher-reingest-btn" style="font-size: 0.78rem; text-decoration: underline; cursor: pointer; color: var(--accent-indigo);" title="Re-process knowledge ingestion">🔄 Re-index</button>
+                            <button type="button" class="btn-text-link" id="teacher-delete-test-btn" style="font-size: 0.78rem; text-decoration: underline; cursor: pointer; color: #ef4444; margin-left: 4px;" title="Delete this test entirely">🗑️ Delete Test</button>
+                        </div>
+                    </div>
+
+                    <!-- Submissions Table Card -->
+                    <div class="glass-table-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Roll No</th>
+                                    <th>Submitted At</th>
+                                    <th>AI Score</th>
+                                    <th>Final Marks</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="submissions-table-body">
+                                <tr>
+                                    <td colspan="7" class="table-empty">No submissions yet for this test.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Override Modal -->
+            <div class="modal-backdrop" id="override-modal" style="display: none;">
+                <div class="modal-card modal-sm">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Review & Override Marks</h3>
+                        <button type="button" class="btn-close" id="close-override-btn">✕</button>
+                    </div>
+                    <form id="override-form" class="modal-body">
+                        <div class="form-group">
+                            <label>Student Name: <strong id="override-stu-name">-</strong></label>
+                        </div>
+                        <div class="form-group">
+                            <label>AI Awarded Score: <span id="override-ai-score" class="score-pill">-</span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Teacher Revised Marks</label>
+                            <input type="number" id="override-new-marks" class="form-input" step="0.5" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Teacher Remarks</label>
+                            <textarea id="override-remarks" class="form-textarea" rows="3" placeholder="Add custom feedback or remarks..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary btn-submit-full">Save Final Marks</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Teacher Student Sheet & Extraction Inspection Modal -->
+            <div class="modal-backdrop" id="inspect-modal" style="display: none;">
+                <div class="modal-card modal-lg">
+                    <div class="modal-header">
+                        <div>
+                            <span class="modal-tag" id="inspect-test-tag">Machine Learning</span>
+                            <h2 class="modal-title" id="inspect-stu-title">Student Answer Sheet & Extraction Inspection</h2>
+                        </div>
+                        <button type="button" class="btn-close" id="close-inspect-modal-btn">✕</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Student Meta Bar -->
+                        <div class="inspect-meta-bar">
+                            <div class="inspect-meta-col">
+                                <span class="meta-label">Student Name</span>
+                                <strong id="inspect-stu-name">-</strong>
+                            </div>
+                            <div class="inspect-meta-col">
+                                <span class="meta-label">Roll Number</span>
+                                <code id="inspect-stu-roll">-</code>
+                            </div>
+                            <div class="inspect-meta-col">
+                                <span class="meta-label">Submitted At</span>
+                                <span id="inspect-stu-time">-</span>
+                            </div>
+                            <div class="inspect-meta-col">
+                                <span class="meta-label">AI Score</span>
+                                <span id="inspect-ai-score" class="score-pill">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Side-by-Side Sheet View & Extracted Text -->
+                        <div class="inspect-split-grid">
+                            <!-- Left: Original / Cleaned Answer Sheet Image -->
+                            <div class="inspect-panel">
+                                <div class="inspect-panel-header">
+                                    <h4>📄 Actual Student Answer Sheet</h4>
+                                    <div class="inspect-tabs-mini">
+                                        <button type="button" class="btn-mini-tab active" id="inspect-tab-orig">Original</button>
+                                        <button type="button" class="btn-mini-tab" id="inspect-tab-proc">Cleaned (Binarized)</button>
+                                    </div>
+                                </div>
+                                <div class="inspect-img-viewport">
+                                    <img id="inspect-orig-img" src="" alt="Student Answer Sheet" style="display: none;">
+                                    <img id="inspect-proc-img" src="" alt="Preprocessed Answer Sheet" style="display: none;">
+                                    <div class="inspect-placeholder" id="inspect-doc-placeholder">
+                                        <span style="font-size: 2.5rem;">📑</span>
+                                        <span id="inspect-filename" style="margin-top: 0.5rem; font-weight: 600;">solution.pdf</span>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted);">PDF Document Submission</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Extracted Digital Text & Segmentation -->
+                            <div class="inspect-panel">
+                                <div class="inspect-panel-header" style="justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <h4>📝 Extracted Text</h4>
+                                        <div class="inspect-tabs-mini">
+                                            <button type="button" class="btn-mini-tab active" id="inspect-tab-raw">Raw OCR</button>
+                                            <button type="button" class="btn-mini-tab" id="inspect-tab-segmented">Segmented Answers</button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-pill" id="inspect-copy-text-btn">Copy Text</button>
+                                </div>
+                                <pre class="raw-text-box inspect-text-box" id="inspect-extracted-text">Extracted text output...</pre>
+                                <div class="segmented-answers-box inspect-text-box" id="inspect-segmented-answers" style="display: none; overflow-y: auto; background: #fff; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- AI Evaluation Summary & Breakdown -->
+                        <div class="inspect-eval-section">
+                            <h4 class="section-heading" style="margin-bottom: 0.75rem;">🤖 AI Evaluation & Rubric Breakdown</h4>
+                            
+                            <div class="reasoning-box" style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                                <div class="reasoning-title">Grading Reasoning</div>
+                                <p class="reasoning-text" id="inspect-reasoning">-</p>
+                            </div>
+
+                            <div class="concepts-grid" style="margin-bottom: 1rem;">
+                                <div class="concept-card success">
+                                    <div class="concept-card-header">
+                                        <span class="concept-icon">✅</span>
+                                        <h4>Concepts Covered</h4>
+                                    </div>
+                                    <ul class="concept-list" id="inspect-covered-list"></ul>
+                                </div>
+                                <div class="concept-card warning">
+                                    <div class="concept-card-header">
+                                        <span class="concept-icon">⚠️</span>
+                                        <h4>Missing / Incomplete Points</h4>
+                                    </div>
+                                    <ul class="concept-list" id="inspect-missing-list"></ul>
+                                </div>
+                            </div>
+
+                            <div class="feedback-card" style="margin-bottom: 1.5rem;">
+                                <div class="feedback-header">
+                                    <span class="feedback-icon">💡</span>
+                                    <h4>AI Constructive Recommendations</h4>
+                                </div>
+                                <p class="feedback-content" id="inspect-feedback">-</p>
+                            </div>
+                        </div>
+
+                        <!-- Teacher Quick Revision Panel -->
+                        <div class="teacher-inline-override-card">
+                            <h4 class="box-title">✏️ Teacher Review & Score Revision</h4>
+                            <form id="inspect-override-form" class="form-row" style="align-items: flex-end;">
+                                <div class="form-group" style="max-width: 140px; margin-bottom: 0;">
+                                    <label>Revised Marks</label>
+                                    <input type="number" id="inspect-new-marks" class="form-input" step="0.5" required min="0">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Teacher Remarks</label>
+                                    <input type="text" id="inspect-remarks" class="form-input" placeholder="e.g. Verified handwritten steps on line 4, revised to 9.5">
+                                </div>
+                                <button type="submit" class="btn-primary" style="height: 42px;">Save Revision</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =================================================================== -->
+        <!-- 3. OCR DIAGNOSTIC LAB -->
+        <!-- =================================================================== -->
+        <section class="portal-view" id="view-ocr-lab">
+            <div class="portal-header">
+                <div>
+                    <h1 class="portal-title">Computer Vision & OCR Diagnostic Lab</h1>
+                    <p class="portal-subtitle">Test and calibrate OpenCV image filters, rotation deskewing, and multi-tier digital PDF extraction.</p>
+                </div>
+            </div>
+
+            <div class="ocr-lab-grid">
+                <!-- Controls -->
+                <div class="lab-sidebar">
+                    <div class="card-box">
+                        <h3 class="box-title">Document Input</h3>
+                        <div class="upload-zone upload-zone-sm" id="lab-drop-zone">
+                            <div class="upload-icon-circle">📂</div>
+                            <div class="upload-title">Drop Image or PDF</div>
+                            <input type="file" id="lab-file-input" accept="image/*,application/pdf" style="display: none;">
+                        </div>
+
+                        <div class="quick-samples-bar" style="margin-top: 1rem;">
+                            <button type="button" class="btn-pill" id="lab-sample-img">Sample Image</button>
+                            <button type="button" class="btn-pill" id="lab-sample-pdf">Sample PDF</button>
+                        </div>
+
+                        <div class="file-chip" id="lab-file-chip" style="display: none; margin-top: 1rem;">
+                            <span class="file-chip-icon">📄</span>
+                            <span class="file-chip-name" id="lab-file-name">-</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <h3 class="box-title" style="margin-bottom: 0;">OCR Engine</h3>
+
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.15rem;">
+                            <select id="lab-ocr-engine" class="form-input" style="padding: 0.55rem 0.75rem; font-weight: 600; cursor: pointer; border-radius: var(--radius-sm);">
+                                <option value="standard" selected>Standard OCR</option>
+                                <option value="chandra">Chandra OCR</option>
+                                <option value="qwen2.5vl">Qwen2.5-VL OCR</option>
+                        <option value="surya">Surya OCR</option>
+                            </select>
+                        </div>
+
+                        <h3 class="box-title">Filter Switches</h3>
+                        <div class="toggle-list">
+                            <label class="switch-row">
+                                <span>Grayscale Conversion</span>
+                                <input type="checkbox" id="lab-gray" checked>
+                            </label>
+                            <label class="switch-row">
+                                <span>Bilateral Denoising</span>
+                                <input type="checkbox" id="lab-denoise" checked>
+                            </label>
+                            <label class="switch-row">
+                                <span>Automatic Deskew</span>
+                                <input type="checkbox" id="lab-deskew" checked>
+                            </label>
+                            <label class="switch-row">
+                                <span>Adaptive Binarization</span>
+                                <input type="checkbox" id="lab-thresh" checked>
+                            </label>
+                        </div>
+
+                        <button type="button" class="btn-primary btn-submit-full" id="lab-process-btn" disabled style="margin-top: 1.5rem;">
+                            Run Extraction Pipeline
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Display & Telemetry -->
+                <div class="lab-workspace">
+                    <div class="stats-row stats-row-4">
+                        <div class="mini-stat-card">
+                            <span class="mini-stat-label">Execution Time</span>
+                            <span class="mini-stat-val" id="lab-stat-time">-</span>
+                        </div>
+                        <div class="mini-stat-card">
+                            <span class="mini-stat-val-gradient" id="lab-stat-conf">-</span>
+                            <span class="mini-stat-label">Average Confidence</span>
+                        </div>
+                        <div class="mini-stat-card">
+                            <span class="mini-stat-label">Skew Corrected</span>
+                            <span class="mini-stat-val" id="lab-stat-skew">-</span>
+                        </div>
+                        <div class="mini-stat-card">
+                            <span class="mini-stat-label" id="lab-stat-engine-label">Engine Used</span>
+                            <span class="mini-stat-val" id="lab-stat-engine" style="font-size: 1.05rem;">Standard OCR</span>
+                        </div>
+                    </div>
+
+                    <div class="panels-split">
+                        <div class="card-box">
+                            <h4 class="box-title">Original Preview</h4>
+                            <div class="preview-viewport" id="lab-orig-viewport">
+                                <span class="placeholder-text">Upload a document to preview</span>
+                                <img id="lab-orig-img" style="display: none;" alt="Original">
+                            </div>
+                        </div>
+                        <div class="card-box">
+                            <h4 class="box-title">Preprocessed (Binarized)</h4>
+                            <div class="preview-viewport" id="lab-proc-viewport">
+                                <span class="placeholder-text">Awaiting pipeline</span>
+                                <img id="lab-proc-img" style="display: none;" alt="Preprocessed">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-box" style="margin-top: 1.5rem;">
+                        <div class="label-with-action">
+                            <h4 class="box-title">Extracted Output</h4>
+                            <button type="button" class="btn-pill" id="lab-copy-btn">Copy Text</button>
+                        </div>
+                        <pre class="raw-text-box raw-text-tall" id="lab-text-output">Extracted text will appear here.</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Notification Toast -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

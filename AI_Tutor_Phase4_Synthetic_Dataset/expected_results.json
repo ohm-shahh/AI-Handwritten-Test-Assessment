@@ -1,0 +1,103 @@
+{
+  "dataset_type": "synthetic educational software test set",
+  "subject": "Database Management Systems",
+  "note": "Qualitative reference, not guaranteed exact live-LLM marks. Use mocked evaluator tests for deterministic score assertions.",
+  "teacher_questions": [
+    {
+      "question_id": "Q1",
+      "question_text": "Explain what a database is and state two benefits of using a database.",
+      "max_marks": 5,
+      "model_answer": "A database is an organized collection of related data. Benefits include easier retrieval, reduced duplication, improved consistency, controlled access, and reliable sharing.",
+      "rubric": [
+        "Definition of organized related data: 2",
+        "One valid benefit: 1",
+        "Second distinct valid benefit: 1",
+        "Relevance and clarity: 1"
+      ]
+    },
+    {
+      "question_id": "Q2(a)",
+      "question_text": "Define a primary key in a relational database.",
+      "max_marks": 3,
+      "model_answer": "A primary key is a column or set of columns that uniquely identifies each row in a table. Its values must be unique and cannot be NULL.",
+      "rubric": [
+        "Uniquely identifies a row: 2",
+        "Mentions uniqueness and/or non-NULL: 1"
+      ]
+    },
+    {
+      "question_id": "Q3",
+      "question_text": "What is a foreign key? State its purpose.",
+      "max_marks": 4,
+      "model_answer": "A foreign key is a column or set of columns that refers to a key in another or the same table. It establishes relationships and helps maintain referential integrity.",
+      "rubric": [
+        "References a key in another/same table: 2",
+        "Explains table relationships: 1",
+        "Mentions referential integrity: 1"
+      ]
+    },
+    {
+      "question_id": "Q4",
+      "question_text": "Explain database normalization and give one reason it is useful.",
+      "max_marks": 5,
+      "model_answer": "Normalization organizes data into related tables to reduce duplication and improve integrity. It can reduce insertion, update, and deletion anomalies.",
+      "rubric": [
+        "Organizes/decomposes data into related tables: 2",
+        "Explains reducing redundancy: 1",
+        "Valid benefit such as integrity/fewer anomalies: 2"
+      ]
+    },
+    {
+      "question_id": "Q5",
+      "question_text": "Differentiate between a primary key and a foreign key.",
+      "max_marks": 5,
+      "model_answer": "A primary key uniquely identifies a row in its own table. A foreign key references a key in another or the same table to create relationships and maintain referential integrity.",
+      "rubric": [
+        "Correct primary-key explanation: 2",
+        "Correct foreign-key explanation: 2",
+        "Meaningful difference/purpose: 1"
+      ]
+    }
+  ],
+  "submissions": {
+    "student_A_strong_answers.pdf": {
+      "expected_mapping": {
+        "Q1": "Q1",
+        "Q2(a)": "Q2(a)",
+        "Q3": "Q3",
+        "Q4": "Q4",
+        "Q5": "Q5"
+      },
+      "expected_quality": "Mostly correct/relevant; should generally score highly according to rubric."
+    },
+    "student_B_partial_and_skipped.pdf": {
+      "expected_mapping": {
+        "Q1": "Q1",
+        "Q2(a)": "Q2(a)",
+        "Q4": "Q4",
+        "Q5": "Q5"
+      },
+      "expected_unanswered": [
+        "Q3"
+      ],
+      "expected_quality": "Partial credit where justified; do not invent a Q3 answer."
+    },
+    "student_C_mapping_edge_cases.pdf": {
+      "expected_mapping": {
+        "Q1": "Q1",
+        "Q2(a)": "Q2(a)",
+        "Q4": "Q4"
+      },
+      "expected_continuation": {
+        "Q4": "Continuation on page 2 remains attached to Q4"
+      },
+      "expected_unmapped": [
+        "Q6"
+      ],
+      "expected_flags": [
+        "Q6 must be review_required/unmapped"
+      ],
+      "expected_quality": "Do not guess-map Q6 to another teacher question."
+    }
+  }
+}

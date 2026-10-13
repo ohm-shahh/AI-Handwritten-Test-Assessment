@@ -1,0 +1,9 @@
+submission_file,student_question_label,expected_teacher_question_id,expected_status,notes
+student_A_strong_answers.pdf,Q1,Q1,mapped,Mostly complete
+student_A_strong_answers.pdf,Q2(a),Q2(a),mapped,Sub-question preserved
+student_A_strong_answers.pdf,Q3,Q3,mapped,Foreign key
+student_A_strong_answers.pdf,Q4,Q4,mapped,Normalization
+student_A_strong_answers.pdf,Q5,Q5,mapped,Comparison
+student_B_partial_and_skipped.pdf,Q3,,unanswered,Do not invent an answer
+student_C_mapping_edge_cases.pdf,Q4,Q4,mapped,Include continuation from page 2
+student_C_mapping_edge_cases.pdf,Q6,,unmapped_review_required,Unknown ID must not be guessed

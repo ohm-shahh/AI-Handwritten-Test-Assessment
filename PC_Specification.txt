@@ -1,0 +1,76 @@
+Static hostname: administrator
+       Icon name: computer-desktop
+         Chassis: desktop 🖥️
+      Machine ID: 6405c403aa25438292237c7380d1187e
+         Boot ID: 4602d7e526e84a38bd725d05bfef56ba
+Operating System: Ubuntu 24.04.4 LTS              
+          Kernel: Linux 6.14.0-35-generic
+    Architecture: x86-64
+ Hardware Vendor: ASRock
+  Hardware Model: Z370 Pro4
+Firmware Version: P2.00
+   Firmware Date: Wed 2018-03-21
+    Firmware Age: 8y 6month 2w 1d                 
+
+========== CPU ==========
+Architecture:                            x86_64
+CPU(s):                                  12
+On-line CPU(s) list:                     0-11
+Model name:                              Intel(R) Core(TM) i7-8700K CPU @ 3.70GHz
+Thread(s) per core:                      2
+Core(s) per socket:                      6
+Socket(s):                               1
+CPU(s) scaling MHz:                      93%
+NUMA node0 CPU(s):                       0-11
+
+========== GPU ==========
+03:00.0 VGA compatible controller: NVIDIA Corporation GP102 [TITAN Xp] (rev a1)
+
+========== NVIDIA GPU DETAILS ==========
+NVIDIA TITAN Xp, 12288 MiB, 580.173.02, 34
+
+========== RAM ==========
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       6.9Gi        15Gi       205Mi       9.8Gi        24Gi
+Swap:          8.0Gi          0B       8.0Gi
+
+========== STORAGE ==========
+NAME                        SIZE TYPE FSTYPE      MOUNTPOINTS                         MODEL
+loop0                      55.5M loop squashfs    /snap/core18/2999                   
+loop1                        74M loop squashfs    /snap/core22/2955                   
+loop2                      55.5M loop squashfs    /snap/core18/3084                   
+loop3                         4K loop squashfs    /snap/bare/5                        
+loop4                      66.8M loop squashfs    /snap/core24/1643                   
+loop5                        74M loop squashfs    /snap/core22/2411                   
+loop6                      66.8M loop squashfs    /snap/core24/2124                   
+loop7                     252.8M loop squashfs    /snap/firefox/8247                  
+loop8                     252.7M loop squashfs    /snap/firefox/8585                  
+loop9                      18.5M loop squashfs    /snap/firmware-updater/212          
+loop10                     16.5M loop squashfs    /snap/firmware-updater/226          
+loop11                    516.2M loop squashfs    /snap/gnome-42-2204/226             
+loop12                    531.4M loop squashfs    /snap/gnome-42-2204/247             
+loop13                    606.1M loop squashfs    /snap/gnome-46-2404/153             
+loop14                     91.7M loop squashfs    /snap/gtk-common-themes/1535        
+loop15                      395M loop squashfs    /snap/mesa-2404/1165                
+loop16                     65.9M loop squashfs    /snap/openbabel/27                  
+loop17                    100.2M loop squashfs    /snap/remmina/7085                  
+loop18                    137.5M loop squashfs    /snap/remmina/7392                  
+loop19                     15.7M loop squashfs    /snap/snap-store/1367               
+loop20                     11.8M loop squashfs    /snap/snap-store/1427               
+loop21                     50.1M loop squashfs    /snap/snapd/27406                   
+loop22                     44.7M loop squashfs    /snap/snapd/28254                   
+loop23                      580K loop squashfs    /snap/snapd-desktop-integration/361 
+loop24                      828K loop squashfs    /snap/snapd-desktop-integration/387 
+loop25                    321.1M loop squashfs    /snap/vlc/3777                      
+sda                         1.8T disk                                                 WDC WD2003FZEX-00SRLA0
+├─sda1                        1G part vfat        /boot/efi                           
+├─sda2                        2G part ext4        /boot                               
+└─sda3                      1.8T part LVM2_member                                     
+  └─ubuntu--vg-ubuntu--lv   1.8T lvm  ext4        /                                   
+
+========== DISK USAGE ==========
+Filesystem                         Size  Used Avail Use% Mounted on
+/dev/mapper/ubuntu--vg-ubuntu--lv  1.8T  758G  980G  44% /
+
+========== KERNEL ==========
+6.14.0-35-generic

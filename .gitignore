@@ -1,0 +1,42 @@
+# Virtual Environments
+.venv/
+.venv
+venv/
+env/
+ENV/
+.env
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Database & Vector DB storage
+*.sqlite3
+*.db
+app/data/chroma/
+app/data/chroma_db/
+app/data/documents/
+
+# Logs & Runtime Outputs
+*.log
+surya_output/
+chandra_init_log.txt
+
+# System & IDE
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+
